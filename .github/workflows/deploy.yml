@@ -1,0 +1,40 @@
+name: Deploy game to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Publish compiled site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          touch dist/.nojekyll
+          git fetch origin gh-pages
+          git worktree add /tmp/switch-rush-pages origin/gh-pages
+          rsync -a --delete --exclude=.git dist/ /tmp/switch-rush-pages/
+          cd /tmp/switch-rush-pages
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          if ! git diff --cached --quiet; then
+            git commit -m "Deploy build from ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
