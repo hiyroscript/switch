@@ -1,1 +1,668 @@
+BUILD PROMPT — SWITCH RUSH
 
+Your mission
+
+You are an expert indie game developer, gameplay designer, UI/UX designer, and senior frontend engineer.
+
+Build a complete, beautiful, exceptionally fun arcade game called SWITCH RUSH inside this GitHub repository:
+
+https://github.com/hiyroscript/G
+
+This is an implementation task, not a request for mockups, planning documents, or pseudocode.
+
+The result must be a real, playable, polished game.
+
+Our goal is to create something with the instant accessibility of a classic mobile arcade game and the satisfaction of a modern, premium-feeling indie game.
+
+The game must be:
+
+* Extremely simple to learn.
+* Fun within the first five seconds.
+* Challenging to master.
+* Responsive and satisfying.
+* Highly replayable, with compelling high-score competition.
+* Beautiful on both mobile and desktop.
+* Fast-loading, smooth, and lightweight.
+* Completely playable without an account, ads, or purchases.
+
+Core design philosophy: Easy to learn. Hard to master. Always fun to retry.
+
+⸻
+
+1. Examine the repository first
+
+Before implementation:
+
+1. Inspect the repository’s complete file structure and default branch.
+2. Identify the existing stack, dependencies, and build setup.
+3. Determine whether a playable game already exists.
+4. Reuse appropriate infrastructure when possible.
+5. If the repository contains no functioning application, create the project from scratch.
+6. Avoid unnecessary frameworks, packages, complexity, or backend services.
+
+The repository was initially observed to contain only an essentially empty Max file, so be prepared to initialize a complete application.
+
+Do not invent existing game features. Implement what is actually needed.
+
+2. The game concept
+
+Title: SWITCH RUSH
+
+Tagline: Two lanes. One tap. How long can you survive?
+
+SWITCH RUSH is a fast, neon-styled, one-touch arcade survival game.
+
+The player controls a glowing energy ball racing through a futuristic world with two parallel lanes.
+
+Obstacles rapidly approach from the right.
+
+The player must instantly switch between the upper and lower lanes to avoid collisions.
+
+The longer the player survives, the faster and more exciting the game becomes.
+
+Players collect energy shards for bonus points, build combos, and earn rewards for precisely timed dodges.
+
+A collision ends the run.
+
+A single tap starts the next attempt.
+
+Core gameplay
+
+* The character moves forward automatically, represented by the scrolling environment.
+* The character remains near the left side of the screen.
+* Obstacles approach from the right.
+* Tap anywhere in the gameplay area to change lanes.
+* Press Space to change lanes on desktop.
+* Avoid obstacles and survive as long as possible.
+* Collect glowing shards for bonus points.
+* Build a score multiplier by collecting consecutive shards.
+* Execute precise last-second lane switches for bonus points.
+* Beat your personal best.
+
+There should be no complicated instructions or lengthy onboarding.
+
+The game should be understandable after watching it for three seconds.
+
+3. Gameplay mechanics
+
+Player movement
+
+The player is a small, luminous sphere with an animated trailing effect.
+
+There are exactly two lanes:
+
+* Upper lane.
+* Lower lane.
+
+A tap or Space press switches the player to the opposite lane.
+
+Requirements:
+
+* Input must respond immediately.
+* A lane change takes approximately 140 milliseconds.
+* Movement uses smooth easing.
+* Rapid repeated input must not cause unpredictable movement.
+* Holding Space must not trigger uncontrolled repeated switches.
+* The transition must have satisfying visual feedback.
+* Lane-switch rules must remain consistent throughout the game.
+
+Arrow Up and Arrow Down may also select their corresponding lanes on desktop.
+
+Obstacles
+
+Introduce recognizable glowing geometric barriers.
+
+Requirements:
+
+* Initially spawn only easy, isolated obstacles.
+* Gradually introduce alternating obstacle patterns.
+* Increase obstacle frequency and speed over time.
+* Give players sufficient visual warning.
+* Never create situations where both lanes are simultaneously impossible to navigate.
+* Never produce an unavoidable collision due to procedural generation.
+* Use simple, predictable hitboxes.
+* Make hazards visually distinct from collectibles.
+
+A valid obstacle pattern must have at least one survivable path.
+
+Do not make the game difficult by relying on unfair surprises.
+
+Collectibles
+
+Add glowing energy shards in either lane.
+
+Collecting a shard:
+
+* Awards bonus points.
+* Triggers a satisfying sparkle effect.
+* Produces a pleasant sound.
+* Contributes toward a combo multiplier.
+
+Shards must never require unavoidable collisions to collect.
+
+Occasionally place optional risk-reward collectibles that encourage skillful switching without blocking the safe route.
+
+Combo system
+
+Implement a clear, understandable multiplier:
+
+* Starting multiplier: x1.
+* Every five consecutive collected shards increases the multiplier by one.
+* Maximum multiplier: x4.
+* Missing a shard resets the collection streak.
+* Colliding ends the run.
+
+Make increasing the multiplier visually exciting, but avoid excessive animations that obscure gameplay.
+
+Perfect Shift mechanic
+
+Reward especially skillful obstacle avoidance.
+
+When a player completes a lane switch out of an obstacle’s path shortly before that obstacle reaches the player’s horizontal position, award a PERFECT SHIFT bonus.
+
+Suggested timing window: 220 milliseconds.
+
+Requirements:
+
+* Award 40 bonus points.
+* Display a short “PERFECT SHIFT +40” animation.
+* Trigger a small particle burst.
+* Play a distinctive sound.
+* Award no more than one bonus per obstacle.
+* Do not award bonuses for meaningless lane-switch spam.
+
+This mechanic should increase the skill ceiling without complicating basic play.
+
+4. Difficulty and game pacing
+
+Make the game immediately engaging without overwhelming new players.
+
+Use a smooth difficulty curve:
+
+Survival time	Experience
+0–10 seconds	Friendly introduction with clear obstacles
+10–25 seconds	Slightly faster, more interesting patterns
+25–45 seconds	Alternating obstacles and tighter timing
+45–75 seconds	Fast-paced, skill-focused gameplay
+75+ seconds	Challenging endless survival
+
+Use a starting obstacle speed of approximately 170 virtual units per second, increasing gradually toward 255.
+
+Design the world around a 360 × 640 virtual coordinate system.
+
+Position the player around x = 80.
+
+Keep obstacle spawn and movement calculations independent of actual screen resolution.
+
+Spawn obstacles far enough ahead that the player can see and respond to them.
+
+Use a time-based obstacle scheduler rather than relying on inconsistent frame counts.
+
+Ensure there is enough time between required lane switches, particularly at higher speeds.
+
+The procedural system must be deterministic when given the same random seed, making it possible to test.
+
+Important
+
+Difficulty should come from increasing player skill requirements, not unpredictable physics or unfair obstacle combinations.
+
+5. Make the game feel amazing
+
+Gameplay feedback is a major priority.
+
+Every meaningful action should produce immediate, satisfying feedback.
+
+Lane switch
+
+* Smooth movement.
+* Short trailing streak.
+* Tiny burst at the departure or arrival point.
+* Crisp synthetic sound.
+
+Collectible
+
+* Small particle explosion.
+* Brief score animation.
+* Bright flash.
+* Pleasing ascending audio cue.
+
+Perfect Shift
+
+* Bright accent-colored text.
+* Quick impact animation.
+* Subtle screen pulse.
+* Stronger sound effect.
+
+Collision
+
+* Immediate freeze or brief impact effect.
+* Clearly communicate what happened.
+* Transition into the game-over screen smoothly.
+
+New high score
+
+* Special celebratory animation.
+* Distinct sound.
+* Prominent “NEW BEST!” label.
+
+Use restrained effects. The game should feel powerful and alive, but must remain visually readable.
+
+6. Art direction and UI design
+
+Create a premium minimalist neon arcade aesthetic.
+
+Visual identity
+
+Use:
+
+* Deep navy and near-black backgrounds.
+* Electric cyan.
+* Vibrant violet.
+* Neon coral for danger.
+* Bright gold for bonus collectibles.
+
+Suggested palette:
+
+* Background: #080B19
+* Cyan: #38E8FF
+* Violet: #9867FF
+* Coral: #FF5578
+* Gold: #FFD76A
+* Primary text: #F7F8FF
+
+Use glow, subtle gradients, gentle particle motion, and layered depth.
+
+Avoid clutter, illegible typography, and distracting visual noise.
+
+Game world
+
+Include:
+
+* Two sleek glowing lanes.
+* A subtle moving grid or starfield.
+* Motion trails.
+* Clean geometric obstacles.
+* Small atmospheric background particles.
+* Smooth palette transitions at score milestones.
+
+The background must communicate forward movement without distracting from obstacles.
+
+Main menu
+
+Display:
+
+* SWITCH RUSH logo.
+* Animated glowing sphere.
+* Clear “TAP TO PLAY” button.
+* One-sentence control instructions.
+* Best score.
+* Sound toggle.
+
+The screen must immediately communicate that this is a playable arcade game.
+
+In-game interface
+
+Display:
+
+* Current score, prominently.
+* Best score, smaller.
+* Current multiplier.
+* Pause button.
+* Optional muted sound indicator.
+
+Keep the majority of the screen dedicated to gameplay.
+
+Game-over screen
+
+Display:
+
+* Final score.
+* Best score.
+* New high-score celebration when applicable.
+* Shards collected.
+* Survival duration.
+* A large “PLAY AGAIN” button.
+* A smaller “MAIN MENU” option.
+
+A new attempt must be possible with one touch.
+
+7. Responsive mobile-first design
+
+The game must work extremely well on smartphones.
+
+Requirements:
+
+* Portrait-oriented layout.
+* Responsive Canvas with proper high-DPI scaling.
+* Support desktop browser windows.
+* Center and scale the game proportionally on large screens.
+* Handle window resizing without breaking gameplay.
+* Respect device safe areas.
+* Prevent accidental page scrolling during active gameplay.
+* Ensure touch input is reliable.
+* Prevent text selection during gameplay.
+* Maintain consistent physics across screen sizes.
+* Keep menus and buttons comfortably touchable.
+
+Use the same gameplay mechanics and scoring on mobile and desktop.
+
+Aim for smooth 60 FPS where supported.
+
+8. Scoring system
+
+Implement a transparent, deterministic scoring model.
+
+Base score:
+
+* 10 points per second survived.
+
+Collectibles:
+
+* 25 points per shard multiplied by the active combo multiplier.
+
+Perfect Shift:
+
+* 40 additional points per qualifying obstacle.
+
+All score values must be calculated from the game state, not from rendered frames.
+
+Use integer scores and avoid floating-point accumulation bugs.
+
+Persist the best score in localStorage.
+
+Also persist:
+
+* Sound preference.
+* Reduced-motion preference, if manually changed.
+
+Handle unavailable or corrupted localStorage gracefully.
+
+No account or backend should be required.
+
+9. Onboarding and accessibility
+
+Keep onboarding extremely short.
+
+On the first run:
+
+1. Show a short “TAP TO SWITCH” message.
+2. Introduce one simple obstacle.
+3. Demonstrate lane switching visually.
+4. Transition naturally into normal gameplay.
+
+Do not force users through lengthy tutorial screens.
+
+Support:
+
+* Touch input.
+* Mouse input.
+* Keyboard input.
+* Visible pause and resume controls.
+* Mute/unmute.
+* Reduced-motion settings.
+* Clear visual distinction between obstacles and collectibles.
+* Readable contrast.
+
+Important game information must not depend exclusively on color or sound.
+
+Automatically pause when the browser tab becomes hidden.
+
+Avoid losing the current run due to ordinary window focus changes.
+
+10. Audio
+
+Generate lightweight arcade sound effects using the Web Audio API or locally bundled assets.
+
+Include distinct sounds for:
+
+* Lane switching.
+* Collectible pickup.
+* Combo increase.
+* Perfect Shift.
+* Collision.
+* New high score.
+* Menu interaction.
+
+Sounds should be short, satisfying, and never excessively loud.
+
+Do not autoplay sound before user interaction.
+
+Provide a clearly visible mute toggle.
+
+The game must remain fully playable without audio.
+
+11. Technical architecture
+
+Preferred stack for a new empty repository:
+
+* TypeScript.
+* Vite.
+* HTML5 Canvas 2D.
+* CSS for menus and responsive layout.
+* Browser localStorage.
+* Web Audio API.
+
+Avoid adding a heavy game engine unless there is a compelling, documented reason.
+
+Organize the code into maintainable modules.
+
+Suggested structure:
+
+/
+├── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── README.md
+├── public/
+│   └── favicon.svg
+├── src/
+│   ├── main.ts
+│   ├── style.css
+│   ├── game/
+│   │   ├── Game.ts
+│   │   ├── Player.ts
+│   │   ├── Obstacles.ts
+│   │   ├── Collectibles.ts
+│   │   ├── Spawner.ts
+│   │   ├── Collision.ts
+│   │   ├── Scoring.ts
+│   │   ├── Renderer.ts
+│   │   ├── Particles.ts
+│   │   └── Input.ts
+│   ├── systems/
+│   │   ├── Audio.ts
+│   │   └── Storage.ts
+│   └── ui/
+│       └── Screens.ts
+└── tests/
+
+This structure is a guide, not an obligation. Keep the architecture as simple as the project allows.
+
+Technical requirements
+
+* Use requestAnimationFrame for rendering.
+* Use delta-time updates for consistent gameplay.
+* Clamp extreme delta time to prevent simulation jumps.
+* Keep collision logic independent of drawing.
+* Separate game logic from DOM UI.
+* Define clear game states: MENU, TUTORIAL, PLAYING, PAUSED, GAME_OVER.
+* Manage input listeners without duplication.
+* Clean up audio nodes and unnecessary resources.
+* Avoid memory leaks.
+* Ensure the game can restart repeatedly without accumulating duplicate timers, listeners, or objects.
+* Avoid unnecessary network requests.
+* Do not collect player data or add analytics.
+
+Use properly defined types.
+
+No essential gameplay features should be left as TODOs.
+
+12. Gameplay balance and fairness
+
+Fairness is mandatory.
+
+Implement procedural generation with validated spawn rules.
+
+The generator must:
+
+* Avoid simultaneous blocking of both lanes.
+* Guarantee sufficient reaction time.
+* Respect the player’s lane-switch duration.
+* Avoid impossible obstacle overlaps.
+* Maintain safe spacing between consecutive hazards.
+* Scale difficulty gradually.
+* Avoid unfair sudden speed changes.
+
+Use a small library of proven obstacle patterns rather than unlimited uncontrolled randomness.
+
+Add variety through obstacle sequencing, colors, particle feedback, collectible placement, and pacing.
+
+Keep the primary gameplay focused on one highly enjoyable mechanic.
+
+13. Performance
+
+Optimize for ordinary smartphones, not only high-end desktops.
+
+Requirements:
+
+* Minimal initial bundle.
+* No unnecessary image downloads.
+* No expensive per-frame layout changes.
+* Limited particle counts.
+* Reuse objects where practical.
+* Cap device pixel ratio if appropriate.
+* Reduce particle density on slower devices.
+* Pause unnecessary work while paused or hidden.
+* Keep input latency low.
+
+Performance and responsiveness matter more than excessive visual effects.
+
+14. Testing
+
+Implement and run meaningful tests.
+
+At minimum, verify:
+
+1. Game states transition correctly.
+2. Lane switching respects the requested controls.
+3. Score calculations are correct.
+4. Multipliers increase and reset properly.
+5. Perfect Shift bonuses cannot be awarded repeatedly for one obstacle.
+6. Collision detection behaves consistently.
+7. Obstacles never create impossible dual-lane situations.
+8. The spawn generator respects reaction-time constraints.
+9. Restart resets the appropriate gameplay state.
+10. Best scores save and load correctly.
+11. Missing or corrupted storage does not crash the game.
+12. The game pauses and resumes correctly.
+
+Also verify:
+
+* Mobile portrait layout.
+* Desktop layout.
+* Touch controls.
+* Keyboard controls.
+* Repeated restarts.
+* Sound off.
+* Reduced motion.
+* No unexpected page scrolling.
+
+Run the production build and fix all build errors.
+
+If browser automation is available, launch the application and perform real gameplay smoke tests.
+
+Do not claim manual or browser testing unless it was actually performed.
+
+15. Polish before adding extra features
+
+First complete the core playable game.
+
+Then iterate on game feel.
+
+Prioritize improvements in this order:
+
+1. Reliable controls and collisions.
+2. Fair, enjoyable challenge.
+3. Satisfying feedback.
+4. Fast restart flow.
+5. Visual polish.
+6. Audio.
+7. High-score celebration.
+8. Optional extras.
+
+Do not spend time on accounts, multiplayer, advertisements, complex inventories, or monetization.
+
+Do not implement manipulative reward systems, artificial waiting periods, or forced engagement.
+
+The game should earn repeat plays through genuine enjoyment and skill mastery.
+
+16. Definition of done
+
+The work is complete only when:
+
+* The game launches successfully.
+* Players can start immediately.
+* Switching lanes works reliably.
+* Obstacles and collectibles function.
+* Collision correctly ends a run.
+* Scoring and combos function.
+* Difficulty increases fairly.
+* Game-over and retry screens work.
+* High scores persist.
+* The UI looks polished.
+* Mobile and desktop controls function.
+* The production build succeeds.
+* Automated tests pass.
+* The README contains setup and gameplay instructions.
+
+The game must be genuinely playable, not merely a styled landing page.
+
+17. GitHub delivery
+
+Implement the game in the repository.
+
+Use an appropriate feature branch and pull request when your environment supports them, rather than replacing the default branch directly.
+
+Do not delete unrelated existing content.
+
+Include a README explaining:
+
+* What SWITCH RUSH is.
+* How to install dependencies.
+* How to run locally.
+* How to build for production.
+* How to play.
+* How scoring works.
+* How to deploy the static application.
+
+Ensure these commands work:
+
+npm install
+npm run dev
+npm run build
+
+Add a test command and document it.
+
+At completion, provide:
+
+1. A brief implementation summary.
+2. The main files added or changed.
+3. Test and build results.
+4. Instructions for playing locally.
+5. Any known remaining limitations.
+6. The branch or pull request link, if created.
+
+Final directive
+
+Build the game. Don’t just describe how to build it.
+
+Make SWITCH RUSH feel like a finished, premium-quality arcade mini-game.
+
+Focus on the tiny details that make games satisfying: timing, responsiveness, fairness, particles, sound, clean UI, and instant retries.
+
+Prefer a small game that is exceptionally enjoyable over a large game filled with unfinished features.
+
+The final result should inspire the reaction:
+
+“That was fun. I want to beat my score.”
