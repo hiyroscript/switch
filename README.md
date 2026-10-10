@@ -59,7 +59,17 @@ The renderer never determines scoring or collision results. Long frame delays ar
 
 Run `npm run build` and upload **the contents of `dist/`** to any static host (GitHub Pages, Cloudflare Pages, Netlify, or similar). The build uses relative asset paths, including the favicon, so repository subdirectories work. No server runtime, environment variables, or secrets are needed.
 
-For GitHub Pages, configure an Actions workflow to install with `npm ci`, run tests and `npm run build`, then upload `dist` using `actions/upload-pages-artifact` and deploy with `actions/deploy-pages`. Select **GitHub Actions** in Settings → Pages. Hosting is not enabled automatically by this repository.
+The live game is at **https://hiyroscript.github.io/switch/**.
+
+GitHub Pages serves the compiled files from the `gh-pages` branch. The
+`.github/workflows/deploy.yml` workflow tests and builds changes to `main`, then
+updates that branch and requests a Pages build. In Settings → Pages, keep
+**Deploy from a branch → gh-pages → / (root)** selected.
+
+Do not point Pages at the source files on `main`: browsers cannot execute the
+uncompiled TypeScript entry point. Only the output of `npm run build` is a
+standalone static website. The deployment branch includes `.nojekyll` so Pages
+serves the generated files unchanged.
 
 ## Limits
 
